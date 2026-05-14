@@ -1,5 +1,5 @@
-import { Redirect } from 'expo-router'
 import { useAccount } from '@/contexts/AccountContext'
+import { Redirect } from 'expo-router'
 import { ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -26,6 +26,6 @@ export default function Index() {
     return <Redirect href="/(auth)/login" />
   }
 
-  return <Redirect href="/(tabs)/" />
+  return <Redirect href="/(tabs)" />
 }
 
