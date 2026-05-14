@@ -1,26 +1,17 @@
-import { useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, useWindowDimensions, Animated } from 'react-native'
-import { useIsFocused } from '@react-navigation/native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useAccount } from '@/contexts/AccountContext'
-import { PrimaryButton } from '@/components/PrimaryButton'
 import { BalanceCard } from '@/components/BalanceCard'
-import { TransactionForm } from '@/components/TransactionForm'
-import { RecentTransactions } from '@/components/RecentTransactions'
-import { useRouter } from 'expo-router'
-import { MAX_CONTENT_WIDTH, isTabletLayout } from '@/constants/layout'
 import { ChartsNative } from '@/components/charts/ChartsNative'
-function getGreeting(): string {
-  const date = new Date()
-  const dayOfWeek = date.toLocaleDateString('pt-BR', { weekday: 'long' })
-  const formattedDate = date.toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-  const capitalized = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1)
-  return `${capitalized}, ${formattedDate}`
-}
+import { Greeting } from '@/components/Greeting'
+import { PrimaryButton } from '@/components/PrimaryButton'
+import { RecentTransactions } from '@/components/RecentTransactions'
+import { TransactionForm } from '@/components/TransactionForm'
+import { MAX_CONTENT_WIDTH, isTabletLayout } from '@/constants/layout'
+import { useAccount } from '@/contexts/AccountContext'
+import { useIsFocused } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
+import { useEffect, useRef } from 'react'
+import { ActivityIndicator, Animated, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+
 
 export default function HomeScreen() {
   const { account, logout, isHydrated } = useAccount()
@@ -158,7 +149,7 @@ export default function HomeScreen() {
     )
   }
 
-  const firstName = account.userName.split(' ')[0] ?? ''
+
 
   return (
     <SafeAreaView style={styles.safeRoot} edges={['top']}>
@@ -170,80 +161,73 @@ export default function HomeScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-      <View style={[styles.content, { width: contentWidth }]}>
-        <Animated.View
-          style={[
-            styles.header,
-            { opacity: headerOpacity, transform: [{ translateY: headerTranslateY }] },
-          ]}
-        >
-          <Text style={styles.greeting}>Olá, {firstName}!</Text>
-          <Text style={styles.date}>{getGreeting()}</Text>
-        </Animated.View>
+        <View style={[styles.content, { width: contentWidth }]}>
 
-        <Animated.View
-          style={[
-            styles.section,
-            { opacity: balanceOpacity, transform: [{ translateY: balanceTranslateY }] },
-          ]}
-        >
-          <BalanceCard balance={account.balance} />
-        </Animated.View>
+          <Greeting headerOpacity={headerOpacity} headerTranslateY={headerTranslateY} />
 
-        <Animated.View
-          style={[
-            styles.card,
-            { opacity: transactionsOpacity, transform: [{ translateY: transactionsTranslateY }] },
-          ]}
-        >
-          <Text style={styles.cardTitle}>Nova transação</Text>
-          <TransactionForm />
-        </Animated.View>
+          <Animated.View
+            style={[
+              styles.section,
+              { opacity: balanceOpacity, transform: [{ translateY: balanceTranslateY }] },
+            ]}
+          >
+            <BalanceCard balance={account.balance} />
+          </Animated.View>
 
-        <Animated.View
-          style={[
-            styles.section,
-            { opacity: transactionsOpacity, transform: [{ translateY: transactionsTranslateY }] },
-          ]}
-        >
-          <RecentTransactions />
-        </Animated.View>
+          <Animated.View
+            style={[
+              styles.card,
+              { opacity: transactionsOpacity, transform: [{ translateY: transactionsTranslateY }] },
+            ]}
+          >
+            <Text style={styles.cardTitle}>Nova transação</Text>
+            <TransactionForm />
+          </Animated.View>
 
-        <Animated.View
-          style={{
-            opacity: chartsOpacity,
-            transform: [{ translateY: chartsTranslateY }],
-          }}
-        >
-          {isTablet ? (
-            <View style={[styles.chartsRow, styles.chartsRowTablet]}>
-              <View style={[styles.chartItem, styles.chartItemTablet]}>
-                <ChartsNative type="Bar" transactions={account.transactions} />
+          <Animated.View
+            style={[
+              styles.section,
+              { opacity: transactionsOpacity, transform: [{ translateY: transactionsTranslateY }] },
+            ]}
+          >
+            <RecentTransactions />
+          </Animated.View>
+
+          <Animated.View
+            style={{
+              opacity: chartsOpacity,
+              transform: [{ translateY: chartsTranslateY }],
+            }}
+          >
+            {isTablet ? (
+              <View style={[styles.chartsRow, styles.chartsRowTablet]}>
+                <View style={[styles.chartItem, styles.chartItemTablet]}>
+                  <ChartsNative type="Bar" transactions={account.transactions} />
+                </View>
+                <View style={[styles.chartItem, styles.chartItemTablet]}>
+                  <ChartsNative type="Pie" transactions={account.transactions} />
+                </View>
               </View>
-              <View style={[styles.chartItem, styles.chartItemTablet]}>
-                <ChartsNative type="Pie" transactions={account.transactions} />
-              </View>
-            </View>
-          ) : (
-            <>
-              <View style={styles.chartItem}>
-                <ChartsNative type="Bar" transactions={account.transactions} />
-              </View>
-              <View style={styles.chartItem}>
-                <ChartsNative type="Pie" transactions={account.transactions} />
-              </View>
-            </>
-          )}
-        </Animated.View>
+            ) : (
+              <>
+                <View style={styles.chartItem}>
+                  <ChartsNative type="Bar" transactions={account.transactions} />
+                </View>
+                <View style={styles.chartItem}>
+                  <ChartsNative type="Pie" transactions={account.transactions} />
+                </View>
+              </>
+            )}
+          </Animated.View>
 
-        <PrimaryButton
-          label="Sair"
-          variant="outline"
-          onPress={handleLogout}
-          style={styles.logoutButton}
-          iconName="log-out-outline"
-        />
-      </View>
+          <PrimaryButton
+            label="Sair"
+            variant="outline"
+            onPress={handleLogout}
+            style={styles.logoutButton}
+            iconName="log-out-outline"
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -288,19 +272,6 @@ const styles = StyleSheet.create({
   },
   content: {
     maxWidth: MAX_CONTENT_WIDTH,
-  },
-  header: {
-    marginBottom: 24,
-  },
-  greeting: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  date: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.7)',
   },
   section: {
     marginBottom: 20,
