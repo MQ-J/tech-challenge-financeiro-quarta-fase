@@ -11,7 +11,3 @@ export const MAX_CONTENT_WIDTH = 800
 
 /** Altura aproximada do footer fixo (px) para padding do scroll. */
 export const FOOTER_HEIGHT = 140
-
-export function isTabletLayout(width: number): boolean {
-  return width >= TABLET_BREAKPOINT
-}

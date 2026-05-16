@@ -1,128 +1,58 @@
+import { InfosCard } from '@/components/InfosCard'
+import { LoginForm } from '@/components/LoginForm'
+import { PrimaryButton } from '@/components/PrimaryButton'
+import { RegisterForm } from '@/components/RegisterForm'
+import {
+  FOOTER_HEIGHT,
+  MAX_CONTENT_WIDTH,
+} from '@/constants/layout'
+import { useTabletLayout } from '@/hooks/useTabletLayout'
+import { theme } from '@/theme/colors'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect, useState } from 'react'
 import {
-  View,
-  Text,
-  StyleSheet,
   Image,
-  ScrollView,
   Modal,
-  useWindowDimensions,
   Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
 } from 'react-native'
-import Toast from 'react-native-toast-message'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { LinearGradient } from 'expo-linear-gradient'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import {
-  isTabletLayout,
-  MAX_CONTENT_WIDTH,
-  FOOTER_HEIGHT,
-} from '@/constants/layout'
-import { useRouter } from 'expo-router'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { InfosCard } from '@/components/InfosCard'
-import { PrimaryButton } from '@/components/PrimaryButton'
-import { TextInputField } from '@/components/TextInputField'
-import { RegisterForm } from '@/components/RegisterForm'
-import { theme } from '@/theme/colors'
-import { useAccount } from '@/contexts/AccountContext'
-import { useAuth } from '@/contexts/AuthContext'
-import { firebaseAuthErrorMessage } from '@/lib/firebase-auth-messages'
-import { FirebaseError } from 'firebase/app'
+import Toast from 'react-native-toast-message'
 
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
-  password: z.string(),
-})
 
-type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function LoginScreen() {
-  const router = useRouter()
   const insets = useSafeAreaInsets()
   const { width } = useWindowDimensions()
-  const tablet = isTabletLayout(width)
+  const { isTablet } = useTabletLayout()
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isRegisterInfoModalOpen, setIsRegisterInfoModalOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const { logout, login } = useAccount()
-  const { signIn } = useAuth()
 
-  const paddingH = tablet ? 32 : 16
-  const heroDirection = tablet ? 'row' as const : 'column' as const
+  const paddingH = isTablet ? 32 : 16
+  const heroDirection = isTablet ? 'row' as const : 'column' as const
   const contentCentered = width > MAX_CONTENT_WIDTH
   const contentWidth = Math.min(width, MAX_CONTENT_WIDTH) - paddingH * 2
   const heroImageSizeHeight =
-    tablet
+    isTablet
       ? Math.max(320, Math.min(450, contentWidth * 0.55))
       : Math.max(150, Math.min(200, contentWidth * 0.75))
-  
-   const heroImageSizeWidth =
-    tablet
+
+  const heroImageSizeWidth =
+    isTablet
       ? Math.max(450, Math.min(450, contentWidth * 0.55))
       : Math.max(320, Math.min(320, contentWidth * 0.75))
-  const modalMaxWidth = tablet ? 440 : undefined
+  const modalMaxWidth = isTablet ? 440 : undefined
   const cardWidth = '48%' as const
-
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  })
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
-
-  // Ao fechar o modal Entrar (qualquer forma), zera e-mail, senha e erros do formulário
-  useEffect(() => {
-    if (!isLoginModalOpen) {
-      reset({ email: '', password: '' })
-    }
-  }, [isLoginModalOpen, reset])
-
-  const onSubmit = async (data: LoginFormValues) => {
-    const email = data.email.trim()
-    try {
-      setIsLoading(true)
-
-      const accountFromFirebase = await signIn(email, data.password)
-
-      setIsLoginModalOpen(false)
-      Toast.show({
-        type: 'success',
-        text1: 'Sucesso',
-        text2:
-          'Login efetuado com sucesso! Você está sendo redirecionado para a home.',
-      })
-      await login(accountFromFirebase)
-      setTimeout(() => {
-        router.replace('/(tabs)' as const)
-      }, 500)
-    } catch (err) {
-      const message =
-        err instanceof FirebaseError
-          ? firebaseAuthErrorMessage(err.code, 'login')
-          : 'Não foi possível entrar. Tente novamente.'
-      Toast.show({
-        type: 'error',
-        text1: 'Erro ao fazer login',
-        text2: message,
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   return (
     <View style={styles.container}>
@@ -132,40 +62,40 @@ export default function LoginScreen() {
           styles.headerBlack,
           {
             paddingHorizontal: paddingH,
-            paddingTop: Math.max(insets.top, tablet ? 16 : 12),
+            paddingTop: Math.max(insets.top, isTablet ? 16 : 12),
           },
-          tablet && styles.headerTablet,
+          isTablet && styles.headerTablet,
         ]}
       >
-            <View style={styles.logoContainer}>
-              <Ionicons
-                name="business-outline"
-                size={tablet ? 28 : 24}
-                color={theme.defaultHome}
-              />
-              <Image
-                source={require('@/assets/images/logo-destaque.png')}
-                style={[
-                  styles.logoImage,
-                  { height: tablet ? 50 : 35, width: tablet ? 215 : 160 },
-                ]}
-                resizeMode="contain"
-                accessibilityLabel="Logo Lumen Financial"
-              />
-            </View>
-            <View style={styles.headerButtons}>
-              <PrimaryButton
-                label="Abra sua conta"
-                iconName="person-add-outline"
-                onPress={() => setIsRegisterInfoModalOpen(true)}
-              />
-              <PrimaryButton
-                label="Entrar"
-                variant="outline"
-                iconName="log-in-outline"
-                onPress={() => setIsLoginModalOpen(true)}
-              />
-            </View>
+        <View style={styles.logoContainer}>
+          <Ionicons
+            name="business-outline"
+            size={isTablet ? 28 : 24}
+            color={theme.defaultHome}
+          />
+          <Image
+            source={require('@/assets/images/logo-destaque.png')}
+            style={[
+              styles.logoImage,
+              { height: isTablet ? 50 : 35, width: isTablet ? 215 : 160 },
+            ]}
+            resizeMode="contain"
+            accessibilityLabel="Logo Lumen Financial"
+          />
+        </View>
+        <View style={styles.headerButtons}>
+          <PrimaryButton
+            label="Abra sua conta"
+            iconName="person-add-outline"
+            onPress={() => setIsRegisterInfoModalOpen(true)}
+          />
+          <PrimaryButton
+            label="Entrar"
+            variant="outline"
+            iconName="log-in-outline"
+            onPress={() => setIsLoginModalOpen(true)}
+          />
+        </View>
       </View>
 
       <View style={styles.gradientWrapper}>
@@ -179,7 +109,7 @@ export default function LoginScreen() {
             styles.scrollContent,
             {
               paddingHorizontal: paddingH,
-              paddingBottom: FOOTER_HEIGHT + insets.bottom + (tablet ? 20 : 16),
+              paddingBottom: FOOTER_HEIGHT + insets.bottom + (isTablet ? 20 : 16),
               alignItems: contentCentered ? 'center' : 'stretch',
             },
           ]}
@@ -191,82 +121,82 @@ export default function LoginScreen() {
               contentCentered && { maxWidth: MAX_CONTENT_WIDTH },
             ]}
           >
-          <View
-            style={[
-              styles.hero,
-              {
-                flexDirection: heroDirection,
-                flexWrap: 'nowrap',
-                marginBottom: tablet ? 28 : 20,
-                minHeight: tablet ? 280 : undefined,
-                alignItems: heroDirection === 'column' ? 'center' : 'center',
-                justifyContent: heroDirection === 'column' ? 'flex-start' : 'space-between',
-              },
-            ]}
-          >
-            <Text
+            <View
               style={[
-                styles.heroText,
+                styles.hero,
                 {
-                  marginRight: tablet ? 20 : 0,
-                  marginBottom: tablet ? 0 : 16,
-                  fontSize: tablet ? 18 : 16,
-                  flex: tablet ? 1 : undefined,
-                  alignSelf: heroDirection === 'column' ? 'stretch' : undefined,
-                  textAlign: tablet ? 'left' : 'center',
-                  paddingHorizontal: tablet ? 0 : 8,
+                  flexDirection: heroDirection,
+                  flexWrap: 'nowrap',
+                  marginBottom: isTablet ? 28 : 20,
+                  minHeight: isTablet ? 280 : undefined,
+                  alignItems: heroDirection === 'column' ? 'center' : 'center',
+                  justifyContent: heroDirection === 'column' ? 'flex-start' : 'space-between',
                 },
               ]}
             >
-              Experimente mais liberdade no controle da sua vida financeira.
-              {'\n'}
-              Crie sua conta com a gente!
-            </Text>
-            <Image
-              source={require('@/assets/images/pessoas.png')}
+              <Text
+                style={[
+                  styles.heroText,
+                  {
+                    marginRight: isTablet ? 20 : 0,
+                    marginBottom: isTablet ? 0 : 16,
+                    fontSize: isTablet ? 18 : 16,
+                    flex: isTablet ? 1 : undefined,
+                    alignSelf: heroDirection === 'column' ? 'stretch' : undefined,
+                    textAlign: isTablet ? 'left' : 'center',
+                    paddingHorizontal: isTablet ? 0 : 8,
+                  },
+                ]}
+              >
+                Experimente mais liberdade no controle da sua vida financeira.
+                {'\n'}
+                Crie sua conta com a gente!
+              </Text>
+              <Image
+                source={require('@/assets/images/pessoas.png')}
+                style={[
+                  styles.heroImage,
+                  { width: heroImageSizeWidth, height: heroImageSizeHeight },
+                ]}
+                resizeMode="contain"
+              />
+            </View>
+
+            <Text
               style={[
-                styles.heroImage,
-                { width: heroImageSizeWidth, height: heroImageSizeHeight },
+                styles.sectionTitle,
+                { fontSize: isTablet ? 20 : 18, marginBottom: isTablet ? 20 : 16 },
               ]}
-              resizeMode="contain"
-            />
-          </View>
+            >
+              Vantagens do nosso banco
+            </Text>
 
-          <Text
-            style={[
-              styles.sectionTitle,
-              { fontSize: tablet ? 20 : 18, marginBottom: tablet ? 20 : 16 },
-            ]}
-          >
-            Vantagens do nosso banco
-          </Text>
-
-          <View style={styles.cardsGrid}>
-            <InfosCard
-              title="Conta e cartão gratuitos"
-              icon="gift-outline"
-              description="Conta digital sem custo fixo e sem tarifa de manutenção."
-              style={{ width: cardWidth }}
-            />
-            <InfosCard
-              title="Saques sem custo"
-              icon="cash-outline"
-              description="Quatro saques gratuitos por mês em qualquer Banco 24h."
-              style={{ width: cardWidth }}
-            />
-            <InfosCard
-              title="Programa de pontos"
-              icon="star-outline"
-              description="Acumule pontos com compras no crédito sem pagar mensalidade."
-              style={{ width: cardWidth }}
-            />
-            <InfosCard
-              title="Seguro Dispositivos"
-              icon="phone-portrait-outline"
-              description="Seus dispositivos protegidos por uma mensalidade simbólica."
-              style={{ width: cardWidth }}
-            />
-          </View>
+            <View style={styles.cardsGrid}>
+              <InfosCard
+                title="Conta e cartão gratuitos"
+                icon="gift-outline"
+                description="Conta digital sem custo fixo e sem tarifa de manutenção."
+                style={{ width: cardWidth }}
+              />
+              <InfosCard
+                title="Saques sem custo"
+                icon="cash-outline"
+                description="Quatro saques gratuitos por mês em qualquer Banco 24h."
+                style={{ width: cardWidth }}
+              />
+              <InfosCard
+                title="Programa de pontos"
+                icon="star-outline"
+                description="Acumule pontos com compras no crédito sem pagar mensalidade."
+                style={{ width: cardWidth }}
+              />
+              <InfosCard
+                title="Seguro Dispositivos"
+                icon="phone-portrait-outline"
+                description="Seus dispositivos protegidos por uma mensalidade simbólica."
+                style={{ width: cardWidth }}
+              />
+            </View>
 
           </View>
         </ScrollView>
@@ -277,8 +207,8 @@ export default function LoginScreen() {
           styles.footer,
           styles.footerFixed,
           {
-            paddingTop: tablet ? 20 : 16,
-            paddingBottom: (tablet ? 20 : 16) + insets.bottom,
+            paddingTop: isTablet ? 20 : 16,
+            paddingBottom: (isTablet ? 20 : 16) + insets.bottom,
             paddingHorizontal: paddingH,
             alignItems: 'center',
           },
@@ -289,23 +219,23 @@ export default function LoginScreen() {
             <Text
               style={[
                 styles.footerTitle,
-                tablet && styles.footerTitleTablet,
+                isTablet && styles.footerTitleTablet,
               ]}
             >
               Serviços
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               Conta Corrente
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               Conta PJ
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               Cartão de Crédito
             </Text>
@@ -314,23 +244,23 @@ export default function LoginScreen() {
             <Text
               style={[
                 styles.footerTitle,
-                tablet && styles.footerTitleTablet,
+                isTablet && styles.footerTitleTablet,
               ]}
             >
               Contatos
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               0800 486 345 02
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               suporte@lumenfinancial.com.br
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               ouvidoria@lumenfinancial.com.br
             </Text>
@@ -358,35 +288,7 @@ export default function LoginScreen() {
                 ]}
               >
                 <Text style={styles.modalTitle}>Acessar sua Conta</Text>
-                <View style={{ marginTop: 16 }}>
-                  <TextInputField
-                    name="email"
-                    control={control}
-                    label="E-mail"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    icon="mail-outline"
-                    error={errors.email}
-                    placeholder="seu@email.com"
-                  />
-                  <TextInputField
-                    name="password"
-                    control={control}
-                    label="Senha"
-                    secureTextEntry
-                    autoCapitalize="none"
-                    icon="lock-closed-outline"
-                    error={errors.password}
-                    placeholder="Digite a sua senha"
-                  />
-                  <PrimaryButton
-                    label={isLoading ? 'Entrando...' : 'Entrar'}
-                    onPress={handleSubmit(onSubmit)}
-                    style={{ marginTop: 12, width: '100%' }}
-                    disabled={isLoading}
-                    iconName="log-in-outline"
-                  />
-                </View>
+                <LoginForm onSuccess={() => setIsLoginModalOpen(false)} />
               </View>
               <View style={styles.toastOverlay} pointerEvents="box-none" collapsable={false}>
                 <Toast />
