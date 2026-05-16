@@ -1,21 +1,19 @@
 import { useAccount } from "@/contexts/AccountContext";
+import { useAnimate } from "@/hooks/useAnimate";
 import { Animated, StyleSheet, Text } from "react-native";
 
-interface GreetingProps {
-    headerOpacity: Animated.Value
-    headerTranslateY: Animated.Value
-}
-
-export function Greeting({ headerOpacity, headerTranslateY }: GreetingProps) {
+export function Greeting() {
     const { account } = useAccount()
+    const { opacity, translateY } = useAnimate()
 
     const firstName = account?.userName.split(' ')[0] ?? ''
+
 
     return (
         <Animated.View
             style={[
                 styles.header,
-                { opacity: headerOpacity, transform: [{ translateY: headerTranslateY }] },
+                { opacity, transform: [{ translateY }] },
             ]}
         >
             <Text style={styles.greeting}>Olá, {firstName}!</Text>

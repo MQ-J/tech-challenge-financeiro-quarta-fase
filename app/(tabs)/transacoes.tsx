@@ -1,9 +1,9 @@
 import { TransactionForm } from '@/components/TransactionForm';
 import TransactionsList from '@/components/TransactionsList';
+import { useAnimate } from '@/hooks/useAnimate';
 import type { Transaction } from '@/lib/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Animated,
   Modal,
@@ -19,40 +19,7 @@ export default function TransactionsScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
-  const isFocused = useIsFocused();
-  const opacity = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(16)).current;
-  const enterAnimation = useRef<Animated.CompositeAnimation | null>(null);
-
-  useEffect(() => {
-    if (!isFocused) {
-      enterAnimation.current?.stop();
-      return;
-    }
-
-    enterAnimation.current?.stop();
-    opacity.setValue(0);
-    translateY.setValue(16);
-
-    const anim = Animated.parallel([
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 260,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 260,
-        useNativeDriver: true,
-      }),
-    ]);
-    enterAnimation.current = anim;
-    anim.start();
-
-    return () => {
-      anim.stop();
-    };
-  }, [isFocused, opacity, translateY]);
+  const { opacity, translateY } = useAnimate()
 
   const openAdd = () => {
     setEditingTransaction(null);

@@ -6,9 +6,8 @@ import { RecentTransactions } from '@/components/RecentTransactions'
 import { TransactionForm } from '@/components/TransactionForm'
 import { MAX_CONTENT_WIDTH, isTabletLayout } from '@/constants/layout'
 import { useAccount } from '@/contexts/AccountContext'
-import { useIsFocused } from '@react-navigation/native'
+import { useAnimate } from '@/hooks/useAnimate'
 import { useRouter } from 'expo-router'
-import { useEffect, useRef } from 'react'
 import { ActivityIndicator, Animated, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -20,104 +19,10 @@ export default function HomeScreen() {
   const contentWidth = Math.min(width - 32, MAX_CONTENT_WIDTH)
   const centered = width > MAX_CONTENT_WIDTH
   const isTablet = isTabletLayout(width)
-  const isFocused = useIsFocused()
 
-  const headerOpacity = useRef(new Animated.Value(0)).current
-  const headerTranslateY = useRef(new Animated.Value(16)).current
-  const balanceOpacity = useRef(new Animated.Value(0)).current
-  const balanceTranslateY = useRef(new Animated.Value(16)).current
-  const transactionsOpacity = useRef(new Animated.Value(0)).current
-  const transactionsTranslateY = useRef(new Animated.Value(16)).current
-  const chartsOpacity = useRef(new Animated.Value(0)).current
-  const chartsTranslateY = useRef(new Animated.Value(16)).current
-  const homeEnterAnimation = useRef<Animated.CompositeAnimation | null>(null)
-
-  useEffect(() => {
-    if (!isHydrated || !account || !isFocused) {
-      homeEnterAnimation.current?.stop()
-      return
-    }
-
-    homeEnterAnimation.current?.stop()
-
-    headerOpacity.setValue(0)
-    headerTranslateY.setValue(16)
-    balanceOpacity.setValue(0)
-    balanceTranslateY.setValue(16)
-    transactionsOpacity.setValue(0)
-    transactionsTranslateY.setValue(16)
-    chartsOpacity.setValue(0)
-    chartsTranslateY.setValue(16)
-
-    const anim = Animated.stagger(100, [
-      Animated.parallel([
-        Animated.timing(headerOpacity, {
-          toValue: 1,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-        Animated.timing(headerTranslateY, {
-          toValue: 0,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.parallel([
-        Animated.timing(balanceOpacity, {
-          toValue: 1,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-        Animated.timing(balanceTranslateY, {
-          toValue: 0,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.parallel([
-        Animated.timing(transactionsOpacity, {
-          toValue: 1,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-        Animated.timing(transactionsTranslateY, {
-          toValue: 0,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.parallel([
-        Animated.timing(chartsOpacity, {
-          toValue: 1,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-        Animated.timing(chartsTranslateY, {
-          toValue: 0,
-          duration: 280,
-          useNativeDriver: true,
-        }),
-      ]),
-    ])
-    homeEnterAnimation.current = anim
-    anim.start()
-
-    return () => {
-      anim.stop()
-    }
-  }, [
-    account,
-    isHydrated,
-    isFocused,
-    headerOpacity,
-    headerTranslateY,
-    balanceOpacity,
-    balanceTranslateY,
-    transactionsOpacity,
-    transactionsTranslateY,
-    chartsOpacity,
-    chartsTranslateY,
-  ])
+  const { opacity: balanceOpacity, translateY: balanceTranslateY } = useAnimate()
+  const { opacity: transactionsOpacity, translateY: transactionsTranslateY } = useAnimate()
+  const { opacity: chartsOpacity, translateY: chartsTranslateY } = useAnimate()
 
   const handleLogout = async () => {
     await logout()
@@ -163,7 +68,7 @@ export default function HomeScreen() {
       >
         <View style={[styles.content, { width: contentWidth }]}>
 
-          <Greeting headerOpacity={headerOpacity} headerTranslateY={headerTranslateY} />
+          <Greeting />
 
           <Animated.View
             style={[
