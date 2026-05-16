@@ -1,23 +1,16 @@
 import { InfosCard } from '@/components/InfosCard'
+import { LoginForm } from '@/components/LoginForm'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { RegisterForm } from '@/components/RegisterForm'
-import { TextInputField } from '@/components/TextInputField'
 import {
   FOOTER_HEIGHT,
   MAX_CONTENT_WIDTH,
 } from '@/constants/layout'
-import { useAccount } from '@/contexts/AccountContext'
-import { useAuth } from '@/contexts/AuthContext'
 import { useTabletLayout } from '@/hooks/useTabletLayout'
-import { firebaseAuthErrorMessage } from '@/lib/firebase-auth-messages'
 import { theme } from '@/theme/colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useRouter } from 'expo-router'
-import { FirebaseError } from 'firebase/app'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import {
   Image,
   Modal,
@@ -30,26 +23,16 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import { z } from 'zod'
 
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
-  password: z.string(),
-})
 
-type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function LoginScreen() {
-  const router = useRouter()
   const insets = useSafeAreaInsets()
   const { width } = useWindowDimensions()
   const { isTablet } = useTabletLayout()
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isRegisterInfoModalOpen, setIsRegisterInfoModalOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const { logout, login } = useAccount()
-  const { signIn } = useAuth()
 
   const paddingH = isTablet ? 32 : 16
   const heroDirection = isTablet ? 'row' as const : 'column' as const
@@ -67,62 +50,9 @@ export default function LoginScreen() {
   const modalMaxWidth = isTablet ? 440 : undefined
   const cardWidth = '48%' as const
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  })
-
   useEffect(() => {
     setIsMounted(true)
   }, [])
-
-  // Ao fechar o modal Entrar (qualquer forma), zera e-mail, senha e erros do formulário
-  useEffect(() => {
-    if (!isLoginModalOpen) {
-      reset({ email: '', password: '' })
-    }
-  }, [isLoginModalOpen, reset])
-
-  const onSubmit = async (data: LoginFormValues) => {
-    const email = data.email.trim()
-    try {
-      setIsLoading(true)
-
-      const accountFromFirebase = await signIn(email, data.password)
-
-      setIsLoginModalOpen(false)
-      Toast.show({
-        type: 'success',
-        text1: 'Sucesso',
-        text2:
-          'Login efetuado com sucesso! Você está sendo redirecionado para a home.',
-      })
-      await login(accountFromFirebase)
-      setTimeout(() => {
-        router.replace('/(tabs)' as const)
-      }, 500)
-    } catch (err) {
-      const message =
-        err instanceof FirebaseError
-          ? firebaseAuthErrorMessage(err.code, 'login')
-          : 'Não foi possível entrar. Tente novamente.'
-      Toast.show({
-        type: 'error',
-        text1: 'Erro ao fazer login',
-        text2: message,
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   return (
     <View style={styles.container}>
@@ -358,35 +288,7 @@ export default function LoginScreen() {
                 ]}
               >
                 <Text style={styles.modalTitle}>Acessar sua Conta</Text>
-                <View style={{ marginTop: 16 }}>
-                  <TextInputField
-                    name="email"
-                    control={control}
-                    label="E-mail"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    icon="mail-outline"
-                    error={errors.email}
-                    placeholder="seu@email.com"
-                  />
-                  <TextInputField
-                    name="password"
-                    control={control}
-                    label="Senha"
-                    secureTextEntry
-                    autoCapitalize="none"
-                    icon="lock-closed-outline"
-                    error={errors.password}
-                    placeholder="Digite a sua senha"
-                  />
-                  <PrimaryButton
-                    label={isLoading ? 'Entrando...' : 'Entrar'}
-                    onPress={handleSubmit(onSubmit)}
-                    style={{ marginTop: 12, width: '100%' }}
-                    disabled={isLoading}
-                    iconName="log-in-outline"
-                  />
-                </View>
+                <LoginForm onSuccess={() => setIsLoginModalOpen(false)} />
               </View>
               <View style={styles.toastOverlay} pointerEvents="box-none" collapsable={false}>
                 <Toast />
