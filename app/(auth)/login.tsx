@@ -1,36 +1,36 @@
-import { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Modal,
-  useWindowDimensions,
-  Pressable,
-} from 'react-native'
-import Toast from 'react-native-toast-message'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { LinearGradient } from 'expo-linear-gradient'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import {
-  isTabletLayout,
-  MAX_CONTENT_WIDTH,
-  FOOTER_HEIGHT,
-} from '@/constants/layout'
-import { useRouter } from 'expo-router'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { InfosCard } from '@/components/InfosCard'
 import { PrimaryButton } from '@/components/PrimaryButton'
-import { TextInputField } from '@/components/TextInputField'
 import { RegisterForm } from '@/components/RegisterForm'
-import { theme } from '@/theme/colors'
+import { TextInputField } from '@/components/TextInputField'
+import {
+  FOOTER_HEIGHT,
+  isTabletLayout,
+  MAX_CONTENT_WIDTH,
+} from '@/constants/layout'
 import { useAccount } from '@/contexts/AccountContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { firebaseAuthErrorMessage } from '@/lib/firebase-auth-messages'
+import { theme } from '@/theme/colors'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { LinearGradient } from 'expo-linear-gradient'
+import { useRouter } from 'expo-router'
 import { FirebaseError } from 'firebase/app'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import {
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import Toast from 'react-native-toast-message'
+import { z } from 'zod'
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
@@ -59,8 +59,8 @@ export default function LoginScreen() {
     tablet
       ? Math.max(320, Math.min(450, contentWidth * 0.55))
       : Math.max(150, Math.min(200, contentWidth * 0.75))
-  
-   const heroImageSizeWidth =
+
+  const heroImageSizeWidth =
     tablet
       ? Math.max(450, Math.min(450, contentWidth * 0.55))
       : Math.max(320, Math.min(320, contentWidth * 0.75))
@@ -137,35 +137,35 @@ export default function LoginScreen() {
           tablet && styles.headerTablet,
         ]}
       >
-            <View style={styles.logoContainer}>
-              <Ionicons
-                name="business-outline"
-                size={tablet ? 28 : 24}
-                color={theme.defaultHome}
-              />
-              <Image
-                source={require('@/assets/images/logo-destaque.png')}
-                style={[
-                  styles.logoImage,
-                  { height: tablet ? 50 : 35, width: tablet ? 215 : 160 },
-                ]}
-                resizeMode="contain"
-                accessibilityLabel="Logo Lumen Financial"
-              />
-            </View>
-            <View style={styles.headerButtons}>
-              <PrimaryButton
-                label="Abra sua conta"
-                iconName="person-add-outline"
-                onPress={() => setIsRegisterInfoModalOpen(true)}
-              />
-              <PrimaryButton
-                label="Entrar"
-                variant="outline"
-                iconName="log-in-outline"
-                onPress={() => setIsLoginModalOpen(true)}
-              />
-            </View>
+        <View style={styles.logoContainer}>
+          <Ionicons
+            name="business-outline"
+            size={tablet ? 28 : 24}
+            color={theme.defaultHome}
+          />
+          <Image
+            source={require('@/assets/images/logo-destaque.png')}
+            style={[
+              styles.logoImage,
+              { height: tablet ? 50 : 35, width: tablet ? 215 : 160 },
+            ]}
+            resizeMode="contain"
+            accessibilityLabel="Logo Lumen Financial"
+          />
+        </View>
+        <View style={styles.headerButtons}>
+          <PrimaryButton
+            label="Abra sua conta"
+            iconName="person-add-outline"
+            onPress={() => setIsRegisterInfoModalOpen(true)}
+          />
+          <PrimaryButton
+            label="Entrar"
+            variant="outline"
+            iconName="log-in-outline"
+            onPress={() => setIsLoginModalOpen(true)}
+          />
+        </View>
       </View>
 
       <View style={styles.gradientWrapper}>
@@ -191,82 +191,82 @@ export default function LoginScreen() {
               contentCentered && { maxWidth: MAX_CONTENT_WIDTH },
             ]}
           >
-          <View
-            style={[
-              styles.hero,
-              {
-                flexDirection: heroDirection,
-                flexWrap: 'nowrap',
-                marginBottom: tablet ? 28 : 20,
-                minHeight: tablet ? 280 : undefined,
-                alignItems: heroDirection === 'column' ? 'center' : 'center',
-                justifyContent: heroDirection === 'column' ? 'flex-start' : 'space-between',
-              },
-            ]}
-          >
-            <Text
+            <View
               style={[
-                styles.heroText,
+                styles.hero,
                 {
-                  marginRight: tablet ? 20 : 0,
-                  marginBottom: tablet ? 0 : 16,
-                  fontSize: tablet ? 18 : 16,
-                  flex: tablet ? 1 : undefined,
-                  alignSelf: heroDirection === 'column' ? 'stretch' : undefined,
-                  textAlign: tablet ? 'left' : 'center',
-                  paddingHorizontal: tablet ? 0 : 8,
+                  flexDirection: heroDirection,
+                  flexWrap: 'nowrap',
+                  marginBottom: tablet ? 28 : 20,
+                  minHeight: tablet ? 280 : undefined,
+                  alignItems: heroDirection === 'column' ? 'center' : 'center',
+                  justifyContent: heroDirection === 'column' ? 'flex-start' : 'space-between',
                 },
               ]}
             >
-              Experimente mais liberdade no controle da sua vida financeira.
-              {'\n'}
-              Crie sua conta com a gente!
-            </Text>
-            <Image
-              source={require('@/assets/images/pessoas.png')}
+              <Text
+                style={[
+                  styles.heroText,
+                  {
+                    marginRight: tablet ? 20 : 0,
+                    marginBottom: tablet ? 0 : 16,
+                    fontSize: tablet ? 18 : 16,
+                    flex: tablet ? 1 : undefined,
+                    alignSelf: heroDirection === 'column' ? 'stretch' : undefined,
+                    textAlign: tablet ? 'left' : 'center',
+                    paddingHorizontal: tablet ? 0 : 8,
+                  },
+                ]}
+              >
+                Experimente mais liberdade no controle da sua vida financeira.
+                {'\n'}
+                Crie sua conta com a gente!
+              </Text>
+              <Image
+                source={require('@/assets/images/pessoas.png')}
+                style={[
+                  styles.heroImage,
+                  { width: heroImageSizeWidth, height: heroImageSizeHeight },
+                ]}
+                resizeMode="contain"
+              />
+            </View>
+
+            <Text
               style={[
-                styles.heroImage,
-                { width: heroImageSizeWidth, height: heroImageSizeHeight },
+                styles.sectionTitle,
+                { fontSize: tablet ? 20 : 18, marginBottom: tablet ? 20 : 16 },
               ]}
-              resizeMode="contain"
-            />
-          </View>
+            >
+              Vantagens do nosso banco
+            </Text>
 
-          <Text
-            style={[
-              styles.sectionTitle,
-              { fontSize: tablet ? 20 : 18, marginBottom: tablet ? 20 : 16 },
-            ]}
-          >
-            Vantagens do nosso banco
-          </Text>
-
-          <View style={styles.cardsGrid}>
-            <InfosCard
-              title="Conta e cartão gratuitos"
-              icon="gift-outline"
-              description="Conta digital sem custo fixo e sem tarifa de manutenção."
-              style={{ width: cardWidth }}
-            />
-            <InfosCard
-              title="Saques sem custo"
-              icon="cash-outline"
-              description="Quatro saques gratuitos por mês em qualquer Banco 24h."
-              style={{ width: cardWidth }}
-            />
-            <InfosCard
-              title="Programa de pontos"
-              icon="star-outline"
-              description="Acumule pontos com compras no crédito sem pagar mensalidade."
-              style={{ width: cardWidth }}
-            />
-            <InfosCard
-              title="Seguro Dispositivos"
-              icon="phone-portrait-outline"
-              description="Seus dispositivos protegidos por uma mensalidade simbólica."
-              style={{ width: cardWidth }}
-            />
-          </View>
+            <View style={styles.cardsGrid}>
+              <InfosCard
+                title="Conta e cartão gratuitos"
+                icon="gift-outline"
+                description="Conta digital sem custo fixo e sem tarifa de manutenção."
+                style={{ width: cardWidth }}
+              />
+              <InfosCard
+                title="Saques sem custo"
+                icon="cash-outline"
+                description="Quatro saques gratuitos por mês em qualquer Banco 24h."
+                style={{ width: cardWidth }}
+              />
+              <InfosCard
+                title="Programa de pontos"
+                icon="star-outline"
+                description="Acumule pontos com compras no crédito sem pagar mensalidade."
+                style={{ width: cardWidth }}
+              />
+              <InfosCard
+                title="Seguro Dispositivos"
+                icon="phone-portrait-outline"
+                description="Seus dispositivos protegidos por uma mensalidade simbólica."
+                style={{ width: cardWidth }}
+              />
+            </View>
 
           </View>
         </ScrollView>
