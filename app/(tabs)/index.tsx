@@ -4,9 +4,10 @@ import { Greeting } from '@/components/Greeting'
 import { PrimaryButton } from '@/components/PrimaryButton'
 import { RecentTransactions } from '@/components/RecentTransactions'
 import { TransactionForm } from '@/components/TransactionForm'
-import { MAX_CONTENT_WIDTH, isTabletLayout } from '@/constants/layout'
+import { MAX_CONTENT_WIDTH } from '@/constants/layout'
 import { useAccount } from '@/contexts/AccountContext'
 import { useAnimate } from '@/hooks/useAnimate'
+import { useTabletLayout } from '@/hooks/useTabletLayout'
 import { useRouter } from 'expo-router'
 import { ActivityIndicator, Animated, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -18,7 +19,7 @@ export default function HomeScreen() {
   const { width } = useWindowDimensions()
   const contentWidth = Math.min(width - 32, MAX_CONTENT_WIDTH)
   const centered = width > MAX_CONTENT_WIDTH
-  const isTablet = isTabletLayout(width)
+  const { isTablet } = useTabletLayout()
 
   const { opacity: balanceOpacity, translateY: balanceTranslateY } = useAnimate()
   const { opacity: transactionsOpacity, translateY: transactionsTranslateY } = useAnimate()

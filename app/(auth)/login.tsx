@@ -4,11 +4,11 @@ import { RegisterForm } from '@/components/RegisterForm'
 import { TextInputField } from '@/components/TextInputField'
 import {
   FOOTER_HEIGHT,
-  isTabletLayout,
   MAX_CONTENT_WIDTH,
 } from '@/constants/layout'
 import { useAccount } from '@/contexts/AccountContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTabletLayout } from '@/hooks/useTabletLayout'
 import { firebaseAuthErrorMessage } from '@/lib/firebase-auth-messages'
 import { theme } from '@/theme/colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -43,7 +43,7 @@ export default function LoginScreen() {
   const router = useRouter()
   const insets = useSafeAreaInsets()
   const { width } = useWindowDimensions()
-  const tablet = isTabletLayout(width)
+  const { isTablet } = useTabletLayout()
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isRegisterInfoModalOpen, setIsRegisterInfoModalOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
@@ -51,20 +51,20 @@ export default function LoginScreen() {
   const { logout, login } = useAccount()
   const { signIn } = useAuth()
 
-  const paddingH = tablet ? 32 : 16
-  const heroDirection = tablet ? 'row' as const : 'column' as const
+  const paddingH = isTablet ? 32 : 16
+  const heroDirection = isTablet ? 'row' as const : 'column' as const
   const contentCentered = width > MAX_CONTENT_WIDTH
   const contentWidth = Math.min(width, MAX_CONTENT_WIDTH) - paddingH * 2
   const heroImageSizeHeight =
-    tablet
+    isTablet
       ? Math.max(320, Math.min(450, contentWidth * 0.55))
       : Math.max(150, Math.min(200, contentWidth * 0.75))
 
   const heroImageSizeWidth =
-    tablet
+    isTablet
       ? Math.max(450, Math.min(450, contentWidth * 0.55))
       : Math.max(320, Math.min(320, contentWidth * 0.75))
-  const modalMaxWidth = tablet ? 440 : undefined
+  const modalMaxWidth = isTablet ? 440 : undefined
   const cardWidth = '48%' as const
 
   const {
@@ -132,22 +132,22 @@ export default function LoginScreen() {
           styles.headerBlack,
           {
             paddingHorizontal: paddingH,
-            paddingTop: Math.max(insets.top, tablet ? 16 : 12),
+            paddingTop: Math.max(insets.top, isTablet ? 16 : 12),
           },
-          tablet && styles.headerTablet,
+          isTablet && styles.headerTablet,
         ]}
       >
         <View style={styles.logoContainer}>
           <Ionicons
             name="business-outline"
-            size={tablet ? 28 : 24}
+            size={isTablet ? 28 : 24}
             color={theme.defaultHome}
           />
           <Image
             source={require('@/assets/images/logo-destaque.png')}
             style={[
               styles.logoImage,
-              { height: tablet ? 50 : 35, width: tablet ? 215 : 160 },
+              { height: isTablet ? 50 : 35, width: isTablet ? 215 : 160 },
             ]}
             resizeMode="contain"
             accessibilityLabel="Logo Lumen Financial"
@@ -179,7 +179,7 @@ export default function LoginScreen() {
             styles.scrollContent,
             {
               paddingHorizontal: paddingH,
-              paddingBottom: FOOTER_HEIGHT + insets.bottom + (tablet ? 20 : 16),
+              paddingBottom: FOOTER_HEIGHT + insets.bottom + (isTablet ? 20 : 16),
               alignItems: contentCentered ? 'center' : 'stretch',
             },
           ]}
@@ -197,8 +197,8 @@ export default function LoginScreen() {
                 {
                   flexDirection: heroDirection,
                   flexWrap: 'nowrap',
-                  marginBottom: tablet ? 28 : 20,
-                  minHeight: tablet ? 280 : undefined,
+                  marginBottom: isTablet ? 28 : 20,
+                  minHeight: isTablet ? 280 : undefined,
                   alignItems: heroDirection === 'column' ? 'center' : 'center',
                   justifyContent: heroDirection === 'column' ? 'flex-start' : 'space-between',
                 },
@@ -208,13 +208,13 @@ export default function LoginScreen() {
                 style={[
                   styles.heroText,
                   {
-                    marginRight: tablet ? 20 : 0,
-                    marginBottom: tablet ? 0 : 16,
-                    fontSize: tablet ? 18 : 16,
-                    flex: tablet ? 1 : undefined,
+                    marginRight: isTablet ? 20 : 0,
+                    marginBottom: isTablet ? 0 : 16,
+                    fontSize: isTablet ? 18 : 16,
+                    flex: isTablet ? 1 : undefined,
                     alignSelf: heroDirection === 'column' ? 'stretch' : undefined,
-                    textAlign: tablet ? 'left' : 'center',
-                    paddingHorizontal: tablet ? 0 : 8,
+                    textAlign: isTablet ? 'left' : 'center',
+                    paddingHorizontal: isTablet ? 0 : 8,
                   },
                 ]}
               >
@@ -235,7 +235,7 @@ export default function LoginScreen() {
             <Text
               style={[
                 styles.sectionTitle,
-                { fontSize: tablet ? 20 : 18, marginBottom: tablet ? 20 : 16 },
+                { fontSize: isTablet ? 20 : 18, marginBottom: isTablet ? 20 : 16 },
               ]}
             >
               Vantagens do nosso banco
@@ -277,8 +277,8 @@ export default function LoginScreen() {
           styles.footer,
           styles.footerFixed,
           {
-            paddingTop: tablet ? 20 : 16,
-            paddingBottom: (tablet ? 20 : 16) + insets.bottom,
+            paddingTop: isTablet ? 20 : 16,
+            paddingBottom: (isTablet ? 20 : 16) + insets.bottom,
             paddingHorizontal: paddingH,
             alignItems: 'center',
           },
@@ -289,23 +289,23 @@ export default function LoginScreen() {
             <Text
               style={[
                 styles.footerTitle,
-                tablet && styles.footerTitleTablet,
+                isTablet && styles.footerTitleTablet,
               ]}
             >
               Serviços
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               Conta Corrente
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               Conta PJ
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               Cartão de Crédito
             </Text>
@@ -314,23 +314,23 @@ export default function LoginScreen() {
             <Text
               style={[
                 styles.footerTitle,
-                tablet && styles.footerTitleTablet,
+                isTablet && styles.footerTitleTablet,
               ]}
             >
               Contatos
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               0800 486 345 02
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               suporte@lumenfinancial.com.br
             </Text>
             <Text
-              style={[styles.footerText, tablet && styles.footerTextTablet]}
+              style={[styles.footerText, isTablet && styles.footerTextTablet]}
             >
               ouvidoria@lumenfinancial.com.br
             </Text>
