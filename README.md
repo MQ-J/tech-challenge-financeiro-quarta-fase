@@ -51,6 +51,10 @@ funcionalidades.
 
 ---
 
+## 🧱 Arquitetura (WIP)
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://embed.figma.com/board/ByiBe378c82YTU0oUrgBzm/Tech-Challenge-fase-4?node-id=0-1&embed-host=share" allowfullscreen></iframe>
+
 ## ✨ Melhorias implementadas (WIP)
 
 ### 🌊 useAnimate
