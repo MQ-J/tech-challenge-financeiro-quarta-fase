@@ -2,6 +2,14 @@ import { useAccount } from "@/contexts/AccountContext";
 import { useAnimate } from "@/hooks/useAnimate";
 import { Animated, StyleSheet, Text } from "react-native";
 
+/**
+ * Componente responsável por exibir uma saudação personalizada para o usuário
+ * autenticado juntamente com a data atual.
+ *
+ * A exibição utiliza animação de entrada com opacidade e deslocamento vertical.
+ *
+ * @returns {JSX.Element} Componente animado contendo a saudação do usuário e a data formatada.
+ */
 export function Greeting() {
     const { account } = useAccount()
     const { opacity, translateY } = useAnimate()

@@ -3,6 +3,16 @@ import { useIsFocused } from "@react-navigation/native"
 import { useEffect, useRef } from "react"
 import { Animated } from "react-native"
 
+/**
+ * Hook para controlar animações de entrada utilizando valores animados
+ * de opacidade e deslocamento vertical.
+ *
+ * A animação é executada somente quando a conta estiver carregada,
+ * disponível e a tela estiver em foco. Caso essas condições não sejam atendidas,
+ * qualquer animação em andamento será interrompida.
+ *
+ * @returns {{ opacity: Animated.Value, translateY: Animated.Value }} Valores animados utilizados para controlar opacidade e deslocamento vertical dos componentes.
+ */
 export function useAnimate() {
     const { account, isHydrated } = useAccount()
     const isFocused = useIsFocused()

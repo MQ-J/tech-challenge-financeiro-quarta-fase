@@ -22,6 +22,19 @@ interface LoginFormProps {
     onSuccess: () => void
 }
 
+
+/**
+ * Componente responsável por renderizar o formulário de autenticação do usuário.
+ *
+ * Realiza validação dos campos utilizando Zod, autentica o usuário,
+ * exibe notificações de sucesso/erro e redireciona para a aplicação
+ * após login concluído com sucesso.
+ *
+ * @param {Object} props - Propriedades do componente.
+ * @param {() => void} props.onSuccess - Função executada após autenticação realizada com sucesso.
+ *
+ * @returns {JSX.Element} Formulário de login contendo campos de e-mail, senha e botão de envio.
+ */
 export function LoginForm({ onSuccess }: LoginFormProps) {
     const { login } = useAccount()
     const { signIn } = useAuth()

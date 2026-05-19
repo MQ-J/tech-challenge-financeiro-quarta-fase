@@ -27,17 +27,17 @@ responsiva e eficiente.
 
 #### Arquitetura Front-end Moderna
 
-- [x] melhoria na organização do código 
+- [ ] melhoria na organização do código 
 seguindo Clean Architecture.
 
 #### Performance e Otimização
 
-- [x] melhorias no tempo de resposta da 
+- [ ] melhorias no tempo de resposta da 
 aplicação.
 
 #### Segurança no Desenvolvimento
 
-- [x] implementação de autenticação 
+- [ ] implementação de autenticação 
 segura e criptografia de dados sensíveis. 
 
 ---
@@ -51,6 +51,17 @@ funcionalidades.
 
 ---
 
+## ✨ Melhorias implementadas (WIP)
+
+### 🌊 useAnimate
+Hook para agrupar a responsabilidade pelas animações da aplicação. 
+
+- A animações ocorrem após os dados do usuário em `account` serem definidos.
+- As animações da opacidade e eixo Y rodam em paralelo, com um delay de **100ms**.
+
+### 📱 useTabletLayout
+Hook responsável por definir a regra de layout em tablets.
+
 ## 🔗 Acesso rápido (ambiente local)
 
 Após iniciar o projeto (veja **Getting Started** abaixo):
@@ -63,14 +74,6 @@ Após iniciar o projeto (veja **Getting Started** abaixo):
 | **🍎 iOS** | `npx expo start --ios` | Simulador ou dispositivo iOS (macOS). |
 
 ---
-
-## ✨ Melhorias implementadas (WIP)
-
-### 🌊 useAnimate
-Hook para agrupar a responsabilidade pelas animações da aplicação. 
-
-- A animações ocorrem após os dados do usuário em `account` serem definidos.
-- As animações da opacidade e eixo Y rodam em paralelo, com um delay de **100ms**.
 
 ## 🛠 Tecnologias utilizadas (WIP)
 
