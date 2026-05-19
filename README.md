@@ -1,60 +1,53 @@
 # 📱 Lumen Financial - Mobile
 
-> Projeto desenvolvido como parte do Tech Challenge (Fase 3). Aplicação de gestão financeira em React Native (Expo), com **Firebase** (Authentication, Firestore, Storage), navegação e persistência local auxiliar (SecureStore / web).
+> Projeto desenvolvido como parte do Tech Challenge (Fase 4). Nesta fase, o desafio é evoluir a aplicação de gerenciamento financeiro desenvolvida na fase anterior ([Fase 3](https://github.com/MQ-J/tech-challenge-financeiro-terceira-fase)), incorporando os novos conceitos aprendidos, como padrões avançados de arquitetura front-end, Clean Architecture, segurança e performance.
 
 ---
 
-## Tech Challenge - Fase 3: Requisitos do desafio
+## Tech Challenge - Fase 4: Requisitos do desafio
 
-### Estrutura e requisitos das telas
+### Refatoração e Melhoria da Arquitetura
 
-#### Tela Principal (Dashboard)
+- [ ] Aplicar padrões de arquitetura modular para uma melhor organização 
+do código.
+- [ ] Implementar State Management Patterns avançados para otimizar o gerenciamento do estado da aplicação.
+- [ ] Separar as camadas de apresentação, domínio e infraestrutura, 
+seguindo os princípios da Clean Architecture.
 
-- [x] Exibir informações do usuário logado e acesso às funcionalidades (home do canal).
-- [x] Exibir gráficos e análises financeiras baseados nas transações do usuário.
-- [x] Implementar animações para transições entre seções do dashboard utilizando Animated (React Native) ou animações nativas do Flutter.
+### Performance e Otimização
 
-#### Tela de Listagem de Transações
-
-- [x] Permitir ao usuário visualizar uma lista de transações.
-- [x] Filtros avançados (por data, tipo, busca textual).
-- [x] Scroll infinito ou paginação para grandes volumes de dados — **paginação na UI** (10 itens por página, controles anterior/próxima quando há mais de 10 transações após os filtros).
-- [x] Integrar a busca com Cloud Firestore para buscar as transações do usuário autenticado.
-
-#### Tela de Adicionar/Editar Transação
-
-- [x] Estrutura para adicionar novas transações e editar transações existentes.
-- [x] Validação de campos com React Hook Form e Zod.
-- [x] Validação avançada de valor, tipo e data da transação.
-- [x] Upload de recibos/documentos (imagem ou PDF) no **Firebase Storage**, com URL em `receiptUrl`; remoção e exclusão da transação removem o arquivo quando aplicável.
-
----
+- [ ] Melhorar o tempo de carregamento da aplicação aplicando estratégias 
+de lazy loading e pré-carregamento.
+- [ ] Implementar armazenamento em cache para otimizar requisições e 
+melhorar a experiência do usuário.
+- [ ] Utilizar técnicas de Programação Reativa para tornar a interface mais 
+responsiva e eficiente.
 
 ### Tecnologias e conceitos a serem utilizados
 
-#### React Native (Mobile)
+#### Arquitetura Front-end Moderna
 
-- [x] React Native para criar a aplicação, com boas práticas de performance e usabilidade.
-- [x] Uso de Expo para configuração inicial, navegação (Expo Router), acesso a APIs nativas e armazenamento seguro (expo-secure-store).
+- [x] melhoria na organização do código 
+seguindo Clean Architecture.
 
-#### Gerenciamento de estado
+#### Performance e Otimização
 
-- [x] Context API para gerenciar o estado global da aplicação, incluindo estado de autenticação e conta (AccountContext).
+- [x] melhorias no tempo de resposta da 
+aplicação.
 
-#### Segurança e armazenamento
+#### Segurança no Desenvolvimento
 
-- [x] Autenticação com **Firebase Auth** (e-mail/senha); persistência nativa com AsyncStorage via `initializeAuth`.
-- [x] Armazenamento seguro local (Expo SecureStore com fallback para web) para metadados de sessão/conta.
-- [x] **Firestore** (perfil `users/{uid}` + transações em `accounts/.../transactions`) e **Cloud Storage** (recibos em `receipts/{uid}/...`).
+- [x] implementação de autenticação 
+segura e criptografia de dados sensíveis. 
 
 ---
 
 ### Material para a entrega
 
-- [x] Link do repositório Git do projeto.
-- [x] README do projeto com informações para executá-lo em ambiente de desenvolvimento.
-- [x] README + [Documentação Firebase](docs/firebase.md): configuração no Console, arquivos do projeto e passos para executar.
-- [x] Vídeo demonstrativo de até 5 (cinco) minutos mostrando: login e autenticação; adicionar/editar transações; visualizar e filtrar transações; upload de anexos; integração com Firebase.
+- [ ] Link do repositório Git do projeto.
+- [ ] README contendo as tecnologias utilizadas e o passo a passo para rodar a aplicação localmente.
+- [ ] Um vídeo de até 5 (cinco) minutos demonstrando as principais 
+funcionalidades.
 
 ---
 
@@ -71,40 +64,15 @@ Após iniciar o projeto (veja **Getting Started** abaixo):
 
 ---
 
-## ✨ Funcionalidades implementadas
+## ✨ Melhorias implementadas (WIP)
 
-### 🔐 Autenticação e conta
+### 🌊 useAnimate
+Hook para agrupar a responsabilidade pelas animações da aplicação. 
 
-- Tela de login com modal **Entrar** (e-mail e senha) via **Firebase Authentication**.
-- Modal **Abra sua conta** com cadastro: cria usuário no Auth e documento inicial em **Firestore** `users/{uid}` (inclui `accountNumber` para a subcoleção de transações).
-- Validação com Zod e React Hook Form; toasts de sucesso e erro (`react-native-toast-message`).
-- Sessão Firebase: **web** com `getAuth`; **Android/iOS** com `initializeAuth` + persistência em **AsyncStorage**.
+- A animações ocorrem após os dados do usuário em `account` serem definidos.
+- As animações da opacidade e eixo Y rodam em paralelo, com um delay de **100ms**.
 
-### 🏠 Navegação e layout
-
-- **Expo Router** (file-based routing): rota inicial, `(auth)/login`, `(tabs)/` (Dashboard e Transações).
-- Home pós-login com mensagem de boas-vindas e botão Sair.
-- Aba **Transações** com listagem e estrutura para criar/editar transações; **paginação** na lista quando o resultado filtrado ultrapassa 10 itens (veja [Paginação na listagem de transações](#paginação-na-listagem-de-transações)).
-- Layout responsivo: breakpoint de tablet em **480px** (reconhece Samsung Tab S FE e similares); hero em linha, grid de vantagens e footer centralizado em telas maiores.
-- **Áreas seguras (notch / status bar / barra de gestos)**: `SafeAreaProvider` no layout raiz; login com `useSafeAreaInsets` no header e footer fixo; abas com `paddingBottom`/`height` da tab bar conforme inset inferior; Home e Transações com `SafeAreaView` no topo para não sobrepor hora e ícones do sistema.
-- **Animações do dashboard**: API **`Animated`** do React Native (`react-native`), com **`useNativeDriver: true`** em opacidade e `translateY` (execução no thread nativo quando suportado). Entrada em sequência (stagger) na Home e fade + slide na aba Transações; as animações **rodam de novo sempre que a aba ganha foco**, usando **`useIsFocused`** do pacote **`@react-navigation/native`** (já trazido pelo Expo Router / React Navigation). Não há pacote separado “native-animated”: o recurso faz parte do core do React Native.
-
-### 📦 Dados e estado
-
-- **AccountContext**: após login, hidrata conta a partir de **Firestore** (`users/{uid}`) e subcoleção **`accounts/{accountNumber}/transactions`**; mutações sincronizam Firestore e espelho em `users/{uid}`.
-- **AuthContext**: `signIn` / `signUp` com Firebase Auth + perfil Firestore no cadastro.
-- Tipos em `lib/types.ts`; integração Firebase detalhada na [Documentação Firebase](docs/firebase.md).
-
-### Paginação na listagem de transações
-
-- **Onde:** componente `components/TransactionsList.tsx` (aba **Transações**).
-- **Regra:** até **10** transações no resultado (após filtros de tipo, data e busca por texto) — a lista se comporta como antes, **sem** barra de paginação. Com **11 ou mais**, aparece uma barra inferior com **anterior / “Página X de Y” / próximo**; cada página mostra no máximo **10** itens.
-- **Implementação:** paginação **no cliente**, sobre o array `account.transactions` já carregado (o contexto continua usando `fetchAllTransactions` em `AccountContext` / `lib/firestore.ts`). Os filtros de texto continuam apenas no app; tipo e intervalo de datas são aplicados em memória na lista.
-- **Firestore (opcional / futuro):** em `lib/firestore.ts`, a função `fetchTransactions` já suporta leitura paginada por cursor (`limit`, `orderBy`, `startAfter`) com `PAGE_SIZE = 10` alinhado à regra da tela; a UI da aba Transações ainda não consome essa função — evita múltiplas leituras só quando for ligada à lista.
-
----
-
-## 🛠 Tecnologias utilizadas
+## 🛠 Tecnologias utilizadas (WIP)
 
 | Área | Tecnologias |
 | :--- | :--- |
@@ -157,7 +125,7 @@ Utilize o QR code no terminal para abrir no **Expo Go** ou as teclas do CLI para
 
 ---
 
-## 📂 Estrutura do projeto
+## 📂 Estrutura do projeto (WIP)
 
 Formato enxuto, no estilo do desafio:
 
