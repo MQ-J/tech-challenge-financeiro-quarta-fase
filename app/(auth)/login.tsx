@@ -33,6 +33,8 @@ export default function LoginScreen() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isRegisterInfoModalOpen, setIsRegisterInfoModalOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const [hasOpenedLogin, setHasOpenedLogin] = useState(false)
+  const [hasOpenedRegister, setHasOpenedRegister] = useState(false)
 
   const paddingH = isTablet ? 32 : 16
   const heroDirection = isTablet ? 'row' as const : 'column' as const
@@ -87,13 +89,19 @@ export default function LoginScreen() {
           <PrimaryButton
             label="Abra sua conta"
             iconName="person-add-outline"
-            onPress={() => setIsRegisterInfoModalOpen(true)}
+            onPress={() => {
+              setHasOpenedRegister(true)
+              setIsRegisterInfoModalOpen(true)
+            }}
           />
           <PrimaryButton
             label="Entrar"
             variant="outline"
             iconName="log-in-outline"
-            onPress={() => setIsLoginModalOpen(true)}
+            onPress={() => {
+              setHasOpenedLogin(true)
+              setIsLoginModalOpen(true)
+            }}
           />
         </View>
       </View>
@@ -288,7 +296,9 @@ export default function LoginScreen() {
                 ]}
               >
                 <Text style={styles.modalTitle}>Acessar sua Conta</Text>
-                <LoginForm onSuccess={() => setIsLoginModalOpen(false)} />
+                {hasOpenedLogin && (
+                  <LoginForm onSuccess={() => setIsLoginModalOpen(false)} />
+                )}
               </View>
               <View style={styles.toastOverlay} pointerEvents="box-none" collapsable={false}>
                 <Toast />
@@ -317,9 +327,11 @@ export default function LoginScreen() {
                 <Text style={styles.modalDescription}>
                   Preencha o formulário abaixo para se cadastrar.
                 </Text>
-                <RegisterForm
-                  onSuccess={() => setIsRegisterInfoModalOpen(false)}
-                />
+                {hasOpenedRegister && (
+                  <RegisterForm
+                    onSuccess={() => setIsRegisterInfoModalOpen(false)}
+                  />
+                )}
               </View>
               <View style={styles.toastOverlay} pointerEvents="box-none" collapsable={false}>
                 <Toast />
