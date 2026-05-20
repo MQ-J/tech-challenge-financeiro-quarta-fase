@@ -66,6 +66,13 @@ Hook para agrupar a responsabilidade pelas animações da aplicação.
 ### 📱 useTabletLayout
 Hook responsável por definir a regra de layout em tablets.
 
+### ⚙️ firebase/actions
+Funções responsáveis pela conexão com o banco utilizado. Neste caso, o Firebase.
+
+- **signOutSection:** Realiza o encerramento da sessão do usuário autenticado.
+- **onAuthStateChangedListener:** Monitora alterações no estado de autenticação do usuário.
+- **conectionErrorMessage:** Converte erros de autenticação em mensagens amigáveis para exibição ao usuário.
+
 ## 🔗 Acesso rápido (ambiente local)
 
 Após iniciar o projeto (veja **Getting Started** abaixo):

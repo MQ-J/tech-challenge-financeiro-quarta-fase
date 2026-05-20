@@ -1,3 +1,4 @@
+import { onAuthStateChangedListener, signOutSection } from '@/firebase/actions'
 import { auth } from '@/firebase/config'
 import {
   addTransactionDoc,
@@ -8,10 +9,9 @@ import {
   type TransactionDocUpdate,
 } from '@/lib/firestore'
 import { deleteReceiptFromFirebaseIfPresent } from '@/lib/receipt-storage'
-import { fetchUserAccountDocument } from '@/lib/user-account-from-firestore'
 import { removeSecureItem, setSecureItem } from '@/lib/storage'
 import type { Account, Transaction } from '@/lib/types'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { fetchUserAccountDocument } from '@/lib/user-account-from-firestore'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message'
 
@@ -60,7 +60,7 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let cancelled = false
-    const unsub = onAuthStateChanged(auth, async (user) => {
+    const unsub = onAuthStateChangedListener(async (user) => {
       if (cancelled) return
 
       if (!user) {
@@ -118,10 +118,10 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
       setAccount((prev) =>
         prev
           ? {
-              ...prev,
-              transactions: withUid.transactions,
-              balance: withUid.balance,
-            }
+            ...prev,
+            transactions: withUid.transactions,
+            balance: withUid.balance,
+          }
           : prev,
       )
     }
@@ -131,7 +131,7 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
     setAccount(null)
     await removeSecureItem('currentAccount')
     try {
-      await signOut(auth)
+      await signOutSection()
     } catch {
       /* sessão já encerrada */
     }

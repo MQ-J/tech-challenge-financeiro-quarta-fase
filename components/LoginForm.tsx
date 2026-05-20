@@ -1,9 +1,8 @@
 import { useAccount } from "@/contexts/AccountContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { firebaseAuthErrorMessage } from "@/lib/firebase-auth-messages";
+import { conectionErrorMessage } from "@/firebase/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import { FirebaseError } from "firebase/app";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -75,10 +74,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             }, 500)
 
         } catch (err) {
-            const message =
-                err instanceof FirebaseError
-                    ? firebaseAuthErrorMessage(err.code, 'login')
-                    : 'Não foi possível entrar. Tente novamente.'
+            const message = conectionErrorMessage(err)
             Toast.show({
                 type: 'error',
                 text1: 'Erro ao fazer login',
