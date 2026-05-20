@@ -153,12 +153,13 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
         )
       }
       await afterSuccess?.()
-    } catch {
-      Toast.show({
-        type: 'error',
-        text1: 'Erro ao sincronizar',
-        text2: 'Não foi possível salvar no Firebase. Verifique conexão e regras.',
-      })
+    } catch (e) {
+      console.log('Erro ao sincronizar com Firebase:', e)
+      // Toast.show({
+      //   type: 'error',
+      //   text1: 'Erro ao sincronizar',
+      //   text2: 'Não foi possível salvar no Firebase. Verifique conexão e regras.',
+      // })
     }
   }
 
