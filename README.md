@@ -1,6 +1,6 @@
 # 📱 Lumen Financial - Mobile
 
-> Projeto desenvolvido como parte do Tech Challenge (Fase 4). Nesta fase, o desafio é evoluir a aplicação de gerenciamento financeiro desenvolvida na fase anterior ([Fase 3](https://github.com/MQ-J/tech-challenge-financeiro-terceira-fase)), incorporando os novos conceitos aprendidos, como padrões avançados de arquitetura front-end, Clean Architecture, segurança e performance.
+> Projeto desenvolvido como parte do Tech Challenge (Fase 4). Nesta fase, o desafio é evoluir a aplicação de gerenciamento financeiro desenvolvida na fase anterior ([Fase 3](https://github.com/MQ-J/tech-challenge-financeiro-terceira-fase)), incorporando os novos conceitos aprendidos, como padrões avançados de arquitetura front-end e Clean Architecture.
 
 ---
 
@@ -18,8 +18,6 @@ seguindo os princípios da Clean Architecture.
 
 - [X] Melhorar o tempo de carregamento da aplicação aplicando estratégias 
 de lazy loading e pré-carregamento.
-- [ ] Implementar armazenamento em cache para otimizar requisições e 
-melhorar a experiência do usuário.
 - [X] Utilizar técnicas de Programação Reativa para tornar a interface mais 
 responsiva e eficiente.
 
@@ -30,31 +28,21 @@ responsiva e eficiente.
 - [X] melhoria na organização do código 
 seguindo Clean Architecture.
 
-#### Performance e Otimização
-
-- [ ] melhorias no tempo de resposta da 
-aplicação.
-
-#### Segurança no Desenvolvimento
-
-- [ ] implementação de autenticação 
-segura e criptografia de dados sensíveis. 
-
 ---
 
 ### Material para a entrega
 
-- [ ] Link do repositório Git do projeto.
-- [ ] README contendo as tecnologias utilizadas e o passo a passo para rodar a aplicação localmente.
-- [ ] Um vídeo de até 5 (cinco) minutos demonstrando as principais 
+- [X] Link do repositório Git do projeto.
+- [X] README contendo as tecnologias utilizadas e o passo a passo para rodar a aplicação localmente.
+- [X] Um vídeo de até 5 (cinco) minutos demonstrando as principais 
 funcionalidades.
 
 ---
 
-## 🧱 Arquitetura
+## 🧱 Arquitetura em cadmadas
 <img src="infra.png"/>
 
-## ✨ Melhorias implementadas (WIP)
+## ✨ Melhorias implementadas
 
 ### 🌊 useAnimate
 Hook para agrupar a responsabilidade pelas animações da aplicação. 
@@ -88,7 +76,7 @@ Após iniciar o projeto (veja **Getting Started** abaixo):
 
 ---
 
-## 🛠 Tecnologias utilizadas (WIP)
+## 🛠 Tecnologias utilizadas
 
 | Área | Tecnologias |
 | :--- | :--- |
@@ -141,53 +129,78 @@ Utilize o QR code no terminal para abrir no **Expo Go** ou as teclas do CLI para
 
 ---
 
-## 📂 Estrutura do projeto (WIP)
+## 📂 Estrutura do projeto
 
 Formato enxuto, no estilo do desafio:
 
 ```text
 tech-challenge-financeiro-quarta-fase/
 ├── docs/
-│   └── firebase.md         # Console Firebase, Firestore/Storage, arquivos relacionados
+│   └── firebase.md                           # Documentação Firebase, Firestore/Storage, guias de configuração
 ├── firebase/
-│   ├── config.ts                 # initializeApp + Auth (web vs native persistence)
-│   └── storage.rules             # Regras Storage (publicar no Console ou deploy CLI)
-├── app/                          # Rotas (Expo Router)
-│   ├── _layout.tsx               # Layout raiz (Stack, AccountProvider, Toast)
-│   ├── index.tsx                 # Redireciona para login ou (tabs)
-│   ├── (auth)/
-│   │   ├── _layout.tsx           # Stack sem header (auth)
-│   │   └── login.tsx             # Tela de login + modais Entrar / Abra sua conta
-│   └── (tabs)/
-│       ├── _layout.tsx           # Bottom tabs (Dashboard, Transações)
-│       ├── index.tsx             # Home pós-login (Dashboard)
-│       └── transacoes.tsx       # Listagem e criação de transações
-├── components/                   # Componentes reutilizáveis
-│   ├── RegisterForm.tsx          # Formulário de cadastro (Zod + RHF)
-│   ├── TextInputField.tsx        # Input com ícone e erro
-│   ├── PrimaryButton.tsx         # Botão primário/outline
-│   ├── InfosCard.tsx             # Card de vantagens (login)
-│   ├── Checkbox.tsx              # Checkbox termos
-│   ├── TransactionsList.tsx      # Lista de transações, filtros e paginação (10/página)
-│   └── ...
+│   ├── config.ts                             # initializeApp + Auth (web vs native com AsyncStorage persistence)
+│   ├── actions.ts                            # Funções Firebase Auth (login, logout, listeners, sign-out)
+│   └── storage.rules                         # Regras Storage (estrutura e permissões de acesso)
+├── app/                                      # Rotas (Expo Router)
+│   ├── _layout.tsx                           # Layout raiz (Stack, AccountProvider, AuthProvider, Toast)
+│   ├── index.tsx                             # Redireciona para login ou (tabs) conforme auth
+│   ├── +not-found.tsx                        # Página 404
+│   ├── (auth)/                               # Grupo de rotas não autenticadas
+│   │   ├── _layout.tsx                       # Stack sem header (auth group)
+│   │   └── login.tsx                         # Tela de login + modais (Entrar / Abrir conta)
+│   └── (tabs)/                               # Grupo de rotas autenticadas
+│       ├── _layout.tsx                       # Bottom tabs (Dashboard, Transações)
+│       ├── index.tsx                         # Home pós-login (Dashboard com saldo)
+│       └── transacoes.tsx                    # Listagem, filtros e criação de transações
+├── components/                               # Componentes reutilizáveis
+│   ├── BalanceCard.tsx                       # Card de saldo/balanço
+│   ├── Greeting.tsx                          # Saudação personalizadas (ex: "Olá, Nome")
+│   ├── InfosCard.tsx                         # Card de informações (benefícios, dicas na login)
+│   ├── Checkbox.tsx                          # Checkbox customizado (termos, aceitar)
+│   ├── TextInputField.tsx                    # Input reutilizável com ícone e validação
+│   ├── PrimaryButton.tsx                     # Botão primário/outline
+│   ├── LoginForm.tsx                         # Formulário login
+│   ├── RegisterForm.tsx                      # Formulário cadastro/registro
+│   ├── TransactionForm.tsx                   # Formulário criação/edição de transação
+│   ├── TransactionsList.tsx                  # Lista completa de transações com filtros e paginação (10/página)
+│   ├── RecentTransactions.tsx                # Widget de transações recentes (resumo)
+│   ├── RecentTransactionRow.tsx              # Linha individual de transação no widget
+│   └── charts/
+│       ├── ChartsNative.tsx                  # Wrapper/container para gráficos
+│       ├── BarChartTransactionsNative.tsx    # Gráfico de barras (transações por período)
+│       └── PieChartExpensesNative.tsx        # Gráfico de pizza (despesas por categoria)
 ├── contexts/
-│   ├── AccountContext.tsx        # Conta, sync Firestore + Storage (transações)
-│   └── AuthContext.tsx           # Firebase Auth + perfil inicial Firestore
+│   ├── AccountContext.tsx                    # Estado da conta (saldo, transações, CRUD transações)
+│   │                                         # Sincroniza Firestore + Storage (metadados locais)
+│   └── AuthContext.tsx                       # Firebase Auth (login, cadastro) + perfil Firestore
 ├── lib/
-│   ├── firebase.ts               # getFirestore + getStorage (mesmo app que config.ts)
-│   ├── firestore.ts              # Transações na subcoleção + espelho users/{uid}
-│   ├── user-account-from-firestore.ts
-│   ├── receipt-storage.ts        # Upload / delete de recibos no Storage
-│   ├── firebase-auth-messages.ts
-│   ├── storage.ts                # SecureStore + fallback web (metadados locais)
-│   ├── types.ts
-│   ├── auth.ts                   # Utilitários bcrypt (legado)
-│   └── …
+│   ├── firebase.ts                           # getFirestore + getStorage (compartilha config.ts)
+│   ├── firestore.ts                          # CRUD transações subcoleção + sync users/{uid}
+│   ├── user-account-from-firestore.ts        # Fetch e mapeamento perfil Firestore → Account
+│   ├── receipt-storage.ts                    # Upload/delete recibos no Firebase Storage
+│   ├── storage.ts                            # SecureStore + fallback web (metadados transações)
+│   ├── types.ts                              # Types: Account, Transaction, TransactionType, FirestoreUserProfile
+│   ├── auth.ts                               # Utilitários bcrypt (legacy)
+│   ├── firebase-auth-messages.ts             # Mapeamento mensagens erro Firebase Auth (PT-BR)
+│   ├── format.ts                             # Formatadores (moeda, data, etc)
+│   ├── transaction-schema.ts                 # Validação Zod para transações
+│   └── chartData.ts                          # Processamento dados para gráficos
 ├── constants/
-│   └── layout.ts                 # TABLET_BREAKPOINT, MAX_CONTENT_WIDTH, FOOTER_HEIGHT
-├── assets/                       # Imagens e recursos
-├── package.json
-└── README.md
+│   └── layout.ts                             # TABLET_BREAKPOINT, MAX_CONTENT_WIDTH, FOOTER_HEIGHT
+├── hooks/
+│   ├── useAnimate.ts                         # Hook animações (Animated API)
+│   ├── useDeferredMount.ts                   # Aguarda hydration antes renderizar
+│   └── useTabletLayout.ts                    # Detecta layout tablet vs mobile
+├── assets/
+│   └── images/                               # Imagens, ícones, recursos estáticos
+├── theme/
+│   └── colors.ts                             # Paleta de cores (tema)
+├── app.json                                  # Configuração Expo (nome, versão, plugins)
+├── expo-env.d.ts                             # Type definitions Expo environment
+├── tsconfig.json                             # TypeScript config
+├── eslint.config.js                          # ESLint rules
+├── package.json                              # Dependências (React Native, Firebase, Zod, RHF, etc)
+└── README.md                                 # Documentação do projeto
 ```
 
 ---
