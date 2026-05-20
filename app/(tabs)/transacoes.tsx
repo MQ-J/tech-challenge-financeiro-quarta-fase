@@ -18,15 +18,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function TransactionsScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [hasOpenedModal, setHasOpenedModal] = useState(false);
 
   const { opacity, translateY } = useAnimate()
 
   const openAdd = () => {
+    setHasOpenedModal(true);
     setEditingTransaction(null);
     setModalVisible(true);
   };
 
   const openEdit = (transaction: Transaction) => {
+    setHasOpenedModal(true);
     setEditingTransaction(transaction);
     setModalVisible(true);
   };
@@ -66,10 +69,12 @@ export default function TransactionsScreen() {
             contentContainerStyle={styles.modalBody}
             keyboardShouldPersistTaps="handled"
           >
-            <TransactionForm
-              transaction={editingTransaction ?? undefined}
-              onSuccess={closeModal}
-            />
+            {hasOpenedModal && (
+              <TransactionForm
+                transaction={editingTransaction ?? undefined}
+                onSuccess={closeModal}
+              />
+            )}
           </ScrollView>
         </SafeAreaView>
       </Modal>

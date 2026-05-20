@@ -68,6 +68,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             })
             await login(accountFromFirebase)
 
+            import('@/components/charts/ChartsNative').catch(() => {})
+            import('@/components/TransactionForm').catch(() => {})
+
             setTimeout(() => {
                 onSuccess()
                 router.replace('/(tabs)' as const)

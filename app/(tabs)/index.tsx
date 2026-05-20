@@ -7,6 +7,7 @@ import { TransactionForm } from '@/components/TransactionForm'
 import { MAX_CONTENT_WIDTH } from '@/constants/layout'
 import { useAccount } from '@/contexts/AccountContext'
 import { useAnimate } from '@/hooks/useAnimate'
+import { useDeferredMount } from '@/hooks/useDeferredMount'
 import { useTabletLayout } from '@/hooks/useTabletLayout'
 import { useRouter } from 'expo-router'
 import { ActivityIndicator, Animated, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
@@ -24,6 +25,7 @@ export default function HomeScreen() {
   const { opacity: balanceOpacity, translateY: balanceTranslateY } = useAnimate()
   const { opacity: transactionsOpacity, translateY: transactionsTranslateY } = useAnimate()
   const { opacity: chartsOpacity, translateY: chartsTranslateY } = useAnimate()
+  const chartsReady = useDeferredMount()
 
   const handleLogout = async () => {
     await logout()
@@ -105,24 +107,30 @@ export default function HomeScreen() {
               transform: [{ translateY: chartsTranslateY }],
             }}
           >
-            {isTablet ? (
-              <View style={[styles.chartsRow, styles.chartsRowTablet]}>
-                <View style={[styles.chartItem, styles.chartItemTablet]}>
-                  <ChartsNative type="Bar" transactions={account.transactions} />
+            {chartsReady ? (
+              isTablet ? (
+                <View style={[styles.chartsRow, styles.chartsRowTablet]}>
+                  <View style={[styles.chartItem, styles.chartItemTablet]}>
+                    <ChartsNative type="Bar" transactions={account.transactions} />
+                  </View>
+                  <View style={[styles.chartItem, styles.chartItemTablet]}>
+                    <ChartsNative type="Pie" transactions={account.transactions} />
+                  </View>
                 </View>
-                <View style={[styles.chartItem, styles.chartItemTablet]}>
-                  <ChartsNative type="Pie" transactions={account.transactions} />
-                </View>
-              </View>
+              ) : (
+                <>
+                  <View style={styles.chartItem}>
+                    <ChartsNative type="Bar" transactions={account.transactions} />
+                  </View>
+                  <View style={styles.chartItem}>
+                    <ChartsNative type="Pie" transactions={account.transactions} />
+                  </View>
+                </>
+              )
             ) : (
-              <>
-                <View style={styles.chartItem}>
-                  <ChartsNative type="Bar" transactions={account.transactions} />
-                </View>
-                <View style={styles.chartItem}>
-                  <ChartsNative type="Pie" transactions={account.transactions} />
-                </View>
-              </>
+              <View style={styles.chartsPlaceholder}>
+                <ActivityIndicator size="large" color="#ffd33d" />
+              </View>
             )}
           </Animated.View>
 
@@ -216,6 +224,12 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 0,
     marginRight: 16,
+  },
+  chartsPlaceholder: {
+    height: 220,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
   },
   logoutButton: {
     marginTop: 8,
