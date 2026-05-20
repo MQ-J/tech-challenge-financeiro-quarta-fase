@@ -8,26 +8,26 @@
 
 ### Refatoração e Melhoria da Arquitetura
 
-- [ ] Aplicar padrões de arquitetura modular para uma melhor organização 
+- [X] Aplicar padrões de arquitetura modular para uma melhor organização 
 do código.
-- [ ] Implementar State Management Patterns avançados para otimizar o gerenciamento do estado da aplicação.
-- [ ] Separar as camadas de apresentação, domínio e infraestrutura, 
+- [X] Implementar State Management Patterns avançados para otimizar o gerenciamento do estado da aplicação.
+- [X] Separar as camadas de apresentação, domínio e infraestrutura, 
 seguindo os princípios da Clean Architecture.
 
 ### Performance e Otimização
 
-- [ ] Melhorar o tempo de carregamento da aplicação aplicando estratégias 
+- [X] Melhorar o tempo de carregamento da aplicação aplicando estratégias 
 de lazy loading e pré-carregamento.
 - [ ] Implementar armazenamento em cache para otimizar requisições e 
 melhorar a experiência do usuário.
-- [ ] Utilizar técnicas de Programação Reativa para tornar a interface mais 
+- [X] Utilizar técnicas de Programação Reativa para tornar a interface mais 
 responsiva e eficiente.
 
 ### Tecnologias e conceitos a serem utilizados
 
 #### Arquitetura Front-end Moderna
 
-- [ ] melhoria na organização do código 
+- [X] melhoria na organização do código 
 seguindo Clean Architecture.
 
 #### Performance e Otimização
@@ -71,6 +71,9 @@ Funções responsáveis pela conexão com o banco utilizado. Neste caso, o Fireb
 - **signOutSection:** Realiza o encerramento da sessão do usuário autenticado.
 - **onAuthStateChangedListener:** Monitora alterações no estado de autenticação do usuário.
 - **conectionErrorMessage:** Converte erros de autenticação em mensagens amigáveis para exibição ao usuário.
+
+### 🛑 useDeferredMount
+Útil para adiar a montagem de componentes pesados para após o primeiro frame visível, melhorando o tempo de resposta inicial.
 
 ## 🔗 Acesso rápido (ambiente local)
 
