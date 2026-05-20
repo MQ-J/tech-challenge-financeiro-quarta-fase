@@ -39,7 +39,7 @@ funcionalidades.
 
 ---
 
-## 🧱 Arquitetura em cadmadas
+## 🧱 Arquitetura em camadas
 <img src="infra.png"/>
 
 ## ✨ Melhorias implementadas
